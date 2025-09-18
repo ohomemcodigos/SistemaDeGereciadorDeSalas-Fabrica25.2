@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const config: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        // O destino é a API
+        destination: 'http://localhost:3000/:path*',
+      },
+    ]
+  },
+}
 
-export default nextConfig;
+export default config;
