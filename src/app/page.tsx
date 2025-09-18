@@ -1,6 +1,11 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function HomePage() {
+  const router = useRouter();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-900 p-4 text-white">
       <div className="w-full max-w-2xl text-center">
@@ -14,7 +19,7 @@ export default function HomePage() {
         <p className="mt-6 text-lg leading-8 text-gray-300">
           Bem-vindo à nossa plataforma. Encontre e reserve salas de reunião, 
           estudo ou eventos de forma simples e rápida. Acesse sua conta ou 
-          crie um novo cadastro para começar.
+          crie um novo cadastro para começar
         </p>
 
         {/* Botões de Ação */}

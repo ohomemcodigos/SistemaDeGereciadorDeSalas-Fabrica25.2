@@ -20,6 +20,7 @@ export default function LoginPage() {
     setError('');     // Limpa erros anteriores
 
     try {
+      // Use o caminho relativo para o proxy funcionar
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -30,43 +31,28 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json();
-        
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
-          
-          // FLAG no console para confirmar o sucesso
-          console.log(
-            '%c[AUTH] Login computado com sucesso!',
-            'color: #22c55e; font-weight: bold; padding: 2px 4px; border-radius: 3px; background-color: #1f2937;'
-          );
-
-          router.push('/rooms');
-        }
+        localStorage.setItem('token', data.token); // Salva o token no localStorage
+        router.push('/rooms'); // Redireciona para a página de salas
       } else {
         const errorData = await response.json();
-        // Define a mensagem de erro para ser exibida na tela
-        setError(errorData.message || 'Email ou senha inválidos.');
+        setError(errorData.message || 'Falha no login. Verifique suas credenciais.');
       }
-    } catch (error) {
-      // Define uma mensagem de erro genérica para falhas de rede
+    } catch (err) {
       setError('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
     } finally {
-      setIsLoading(false); // Desativa o carregamento, independente do resultado
+      setIsLoading(false); // Desativa o estado de carregamento
     }
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-900 p-4">
+    <main className="flex min-h-screen items-center justify-center bg-zinc-900">
       <div className="w-full max-w-md space-y-6 rounded-lg bg-gray-800 p-8 shadow-lg">
-        <h1 className="text-center text-3xl font-bold text-white">
-          Login
-        </h1>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Campo de Email */}
+        <h1 className="text-center text-3xl font-bold text-white">Login</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="email"
               className="mb-2 block text-sm font-medium text-gray-300"
             >
               Email:
@@ -81,11 +67,10 @@ export default function LoginPage() {
               required
             />
           </div>
-          
-          {/* Campo de Senha */}
+
           <div>
-            <label 
-              htmlFor="password" 
+            <label
+              htmlFor="password"
               className="mb-2 block text-sm font-medium text-gray-300"
             >
               Senha:
@@ -100,38 +85,24 @@ export default function LoginPage() {
               required
             />
           </div>
-          
-          {/* Mensagem de Erro (aparece condicionalmente) */}
-          {error && (
-            <div className="rounded-md bg-red-900/50 p-3 text-center text-sm text-red-400">
-              {error}
-            </div>
-          )}
-          
-          {/* Botão de Envio com lógica de carregamento */}
-          <button 
-            type="submit" 
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          <button
+            type="submit"
             disabled={isLoading}
-            className="w-full rounded-md bg-blue-600 p-3 text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:cursor-not-allowed disabled:bg-blue-800"
+            className="w-full rounded-md bg-blue-600 p-3 text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50"
           >
             {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        {/* Divisor */}
-        <div className="my-2 flex items-center">
-          <div className="flex-grow border-t border-gray-600"></div>
-          <span className="mx-4 flex-shrink text-sm text-gray-400">Ou</span>
-          <div className="flex-grow border-t border-gray-600"></div>
+        <div className="text-center text-sm text-gray-400">
+          Não tem uma conta?{' '}
+          <Link href="/register" className="font-medium text-blue-400 hover:underline">
+            Crie uma
+          </Link>
         </div>
-
-        {/* Link para Registro */}
-        <Link
-          href="/register"
-          className="block w-full rounded-md border border-gray-600 bg-transparent p-3 text-center text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-        >
-          Criar uma conta
-        </Link>
       </div>
     </main>
   );
