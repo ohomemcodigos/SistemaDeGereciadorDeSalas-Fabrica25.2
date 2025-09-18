@@ -16,8 +16,8 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsLoading(true); // Ativa o estado de carregamento
-    setError('');     // Limpa erros anteriores
+    setIsLoading(true); 
+    setError('');
 
     try {
       // Use o caminho relativo para o proxy funcionar
@@ -40,7 +40,7 @@ export default function LoginPage() {
     } catch (err) {
       setError('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
     } finally {
-      setIsLoading(false); // Desativa o estado de carregamento
+      setIsLoading(false);
     }
   };
 
