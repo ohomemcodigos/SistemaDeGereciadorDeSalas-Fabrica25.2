@@ -2,15 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  
+  // Estados para o feedback
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', content: '' });
+
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Dados do registro:', { nome, email, senha });
+    setIsLoading(true);
+    setMessage({ type: '', content: '' });
 
     try {
       const response = await fetch('/api/usuarios', {
@@ -21,13 +29,20 @@ export default function RegisterPage() {
         body: JSON.stringify({ nome, email, senha }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        console.log('Registro bem-sucedido!');
+        setMessage({ type: 'success', content: 'Registro bem-sucedido! Redirecionando...' });
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
       } else {
-        console.error('Erro no registro.');
+        setMessage({ type: 'error', content: data.message || 'Não foi possível realizar o registro.' });
       }
     } catch (error) {
-      console.error('Falha na comunicação com a API:', error);
+      setMessage({ type: 'error', content: 'Falha na comunicação com o servidor.' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,12 +110,24 @@ export default function RegisterPage() {
               required
             />
           </div>
+          
+          {/* Bloco de Mensagens de Aviso */}
+          {message.content && (
+            <div className={`rounded-md p-3 text-center text-sm ${
+              message.type === 'success' 
+                ? 'bg-green-900/50 text-green-400' 
+                : 'bg-red-900/50 text-red-400'
+            }`}>
+              {message.content}
+            </div>
+          )}
 
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 p-3 text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+            disabled={isLoading}
+            className="w-full rounded-md bg-blue-600 p-3 text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:cursor-not-allowed disabled:bg-blue-800"
           >
-            Registrar
+            {isLoading ? 'Registrando...' : 'Registrar'}
           </button>
         </form>
 
