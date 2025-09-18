@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault(); // Impede que a página recaregue
-    console.log('Dados do login:', { email, senha }); // teste
+    /*console.log('Dados do login:', { email, senha }); // teste*/
   };
 
   return (
