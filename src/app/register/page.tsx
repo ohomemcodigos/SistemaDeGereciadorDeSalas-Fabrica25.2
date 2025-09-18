@@ -1,6 +1,5 @@
 'use client';
 
-/* bibliotecas */
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -9,13 +8,30 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault(); // Impede a página recarregar
-    console.log('Dados do registro:', { nome, email, senha }); //teste
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log('Dados do registro:', { nome, email, senha });
+
+    try {
+      const response = await fetch('/api/usuarios', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nome, email, senha }),
+      });
+
+      if (response.ok) {
+        console.log('Registro bem-sucedido!');
+      } else {
+        console.error('Erro no registro.');
+      }
+    } catch (error) {
+      console.error('Falha na comunicação com a API:', error);
+    }
   };
 
   return (
-    // Container principal
     <main className="flex min-h-screen items-center justify-center bg-zinc-900 p-4">
       <div className="w-full max-w-md space-y-6 rounded-lg bg-gray-800 p-8 shadow-lg">
         <h1 className="text-center text-3xl font-bold text-white">
